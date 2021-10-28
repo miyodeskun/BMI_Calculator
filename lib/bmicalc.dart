@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class BmiCalcPage extends StatefulWidget {
   const BmiCalcPage({Key? key}) : super(key: key);
@@ -11,6 +12,9 @@ class _BmiCalcPageState extends State<BmiCalcPage> {
   TextEditingController heightEditingController = TextEditingController();
   TextEditingController weightEditingController = TextEditingController();
   double height = 0.0, weight = 0.0, bmi = 0.0;
+
+  AudioCache audioCache = new AudioCache();
+  AudioPlayer audioPlayer = new AudioPlayer();
 
   @override
   Widget build(BuildContext context) {
@@ -80,5 +84,20 @@ class _BmiCalcPageState extends State<BmiCalcPage> {
     setState(() {
       bmi = weight / (height * height);
     });
+    if (bmi > 25) {
+      loadFail();
+    } else if ((bmi <= 24.9) && (bmi >= 18.5)) {
+      loadOk();
+    } else if (bmi < 18.5) {
+      loadFail();
+    }
+  }
+
+  loadOk() async {
+    audioPlayer = await AudioCache().play('audios/# Noice.mp3');
+  }
+
+  loadFail() async {
+    audioPlayer = await AudioCache().play('audios/# Quack.mp3');
   }
 }
